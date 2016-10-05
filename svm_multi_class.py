@@ -14,9 +14,6 @@ from daal.algorithms.classifier import prediction as prediction_params
 
 class MulticlassSVM:
 
-    _nclasses = 0
-    _svm_training_alg = None
-    _svm_prediction_alg = None
 
     def __init__(self, nclasses):
         """Initialize class parameters

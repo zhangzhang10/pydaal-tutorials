@@ -10,13 +10,68 @@ from daal.algorithms.ridge_regression import training as ridge_training
 from daal.algorithms.ridge_regression import prediction as ridge_prediction
 from daal.data_management import HomogenNumericTable
 
+from utils import *
+
 import numpy as np
 
-import warnings
 
-class LR:
+def getBetas(linear_model):
+    """Return regression coefficients for a given linear model
 
-    _method = 'normEq'
+    Args:
+        linear_model: A trained model
+
+    Returns:
+        A n-by-(k+1) NumericTable contains betas, where n is the number of dependent
+        variables; k is the number of features (independent variables)
+    """
+
+    return linear_model.getBeta()
+
+
+
+
+def mse(values, fitted_values):
+    """Return Mean Squared Errors for fitted values w.r.t. true values
+
+    Args:
+        values: True values. NumericTable, nsamples-by-noutputs
+        fitted_values: True values. NumericTable, nsamples-by-noutputs
+
+    Returns:
+        A tuple contains MSE's
+    """
+
+    y_t = getArrayFromNT(values)
+    y_p = getArrayFromNT(fitted_values)
+    rss = ((y_t - y_p) ** 2).sum(axis = 0)
+    mse = rss / y_t.shape[0]
+    return tuple(mse)
+
+
+
+
+def score(y_true, y_pred):
+    """Compute R-squared and adjusted R-squared
+
+    Args:
+        y_true: True values. NumericTable, shape = (nsamples, noutputs)
+        y_pred: Predicted values. NumericTable, shape = (nsamples, noutputs)
+
+    Returns:
+        R2: A tuple with noutputs values
+    """
+
+    y_t = getArrayFromNT(y_true)
+    y_p = getArrayFromNT(y_pred)
+    rss = ((y_t - y_p) ** 2).sum(axis = 0)
+    tss = ((y_t - y_t.mean(axis = 0)) ** 2).sum(axis = 0)
+    return (1 - rss/tss)
+
+
+
+class LinearRegression:
+
 
     def __init__(self, method = 'normEq'):
         """Initialize class parameters
@@ -31,7 +86,7 @@ class LR:
             ' method is not supported. Default method is used', 
             UserWarning)
 
-        self._method = method
+        self.method_ = method
 
 
 
@@ -47,7 +102,7 @@ class LR:
         """
 
         # Create a training algorithm object
-        if self._method == 'qr': 
+        if self.method_ == 'qr': 
             lr_training_alg = lr_training.Batch_Float64QrDense() 
         else:
             lr_training_alg = lr_training.Batch_Float64NormEqDense() 
@@ -143,4 +198,6 @@ class Ridge:
         # Compute
         results = ridge_prediction_alg.compute()
         return results.get(ridge_prediction.prediction)
+
+
 

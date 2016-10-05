@@ -1,5 +1,5 @@
 
-""" A class for two-class and multi-class classifier quality metrics"""
+""" A class for classifier quality metrics."""
 
 __author__ = 'Zhang Zhang'
 __email__ = 'zhang.zhang@intel.com'
@@ -10,12 +10,21 @@ from daal.algorithms.svm import quality_metric_set as twoclass_quality
 from daal.algorithms.classifier.quality_metric import binary_confusion_matrix
 from daal.data_management import BlockDescriptor_Float64, readOnly
 
-class QualityMetrics:
+from collections import namedtuple
 
-    _truth = None
-    _predictions = None
-    _twoclass_metrics = None
-    _multiclass_metrics = None
+
+# Two-class quality metrics type
+TwoClassMetrics = namedtuple('TwoClassMetrics',
+        ['accuracy', 'precision', 'recall', 'fscore', 'specificity', 'auc'])
+
+# Multi-class quality metrics type
+MultiClassMetrics = namedtuple('MultiClassMetrics',
+        ['accuracy', 'error_rate', 'micro_precision', 'micro_recall',
+         'micro_fscore', 'macro_precision', 'macro_recall', 'macro_fscore'])
+
+
+class ClassifierQualityMetrics:
+
 
     def __init__(self, truth, predictions, nclasses = 2):
         """Initialize class parameters
@@ -36,76 +45,19 @@ class QualityMetrics:
             raise ValueError('nclasses must be at least 2')
 
 
-    def getTwoclassAccuracy(self):
-        """Return accuray from two-class classification quality metrics
-        """
-        return self._twoclass_metrics[binary_confusion_matrix.accuracy]
 
-    def getTwoclassPrecision(self):
-        """Return precision from two-class classification quality metrics
-        """
-        return self._twoclass_metrics[binary_confusion_matrix.precision]
+    def get(self, metric):
+        """Get a metric from the quality metrics collection
 
-    def getTwoclassRecall(self):
-        """Return recall from two-class classification quality metrics
-        """
-        return self._twoclass_metrics[binary_confusion_matrix.recall]
+        Args:
+           metric: name of the metric to return
 
-    def getTwoclassFscore(self):
-        """Return fscore from two-class classification quality metrics
+        Returns:
+           A numeric value for the given metric
         """
-        return self._twoclass_metrics[binary_confusion_matrix.fscore]
 
-    def getTwoclassSpecificity(self):
-        """Return specificity from two-class classification quality metrics
-        """
-        return self._twoclass_metrics[binary_confusion_matrix.specificity]
+        return getattr(self._metrics, metric)
 
-    def getTwoclassAUC(self):
-        """Return AUC from two-class classification quality metrics
-        """
-        return self._twoclass_metrics[binary_confusion_matrix.AUC]
-
-
-    def getMulticlassAverageAccuracy(self):
-        """Return average accuracy from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.averageAccuracy]
-
-    def getMulticlassErrorRate(self):
-        """Return error rate from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.errorRate]
-
-    def getMulticlassMicroPrecision(self):
-        """Return micro precision from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.microPrecision]
-
-    def getMulticlassMicroRecall(self):
-        """Return micro recall from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.microRecall]
-
-    def getMulticlassMicroFscore(self):
-        """Return micro fscore from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.microFscore]
-
-    def getMulticlassMacroPrecision(self):
-        """Return macro precision from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.macroPrecision]
-
-    def getMulticlassMacroRecall(self):
-        """Return macro recall from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.macroRecall]
-
-    def getMulticlassMacroFscore(self):
-        """Return macro fscore from multi-class classification quality metrics
-        """
-        return self._multiclass_metrics[multiclass_confusion_matrix.macroFscore]
 
 
     def _computeTwoclassQualityMetrics(self):
@@ -121,10 +73,14 @@ class QualityMetrics:
         confusion = quality_alg.compute().getResult(twoclass_quality.confusionMatrix)
         # Retrieve quality metrics from the confusion matrix
         metrics = confusion.get(binary_confusion_matrix.binaryMetrics)
-        # Convert the metrics into an ndarray and return it
+        # Convert the metrics into a Python namedtuple and return it
         block = BlockDescriptor_Float64()
         metrics.getBlockOfRows(0, 1, readOnly, block)
-        self._twoclass_metrics = block.getArray().flatten()
+        x = block.getArray().flatten()
+        self._metrics = TwoClassMetrics(*x)
+        metrics.releaseBlockOfRows(block)
+
+
 
     def _computeMulticlassQualityMetrics(self, nclasses):
         # Alg object for quality metrics computation
@@ -139,10 +95,11 @@ class QualityMetrics:
         confusion = quality_alg.compute().getResult(multiclass_quality.confusionMatrix)
         # Retrieve quality metrics from the confusion matrix
         metrics = confusion.get(multiclass_confusion_matrix.multiClassMetrics)
-        # Convert the metrics into an ndarray and return it
+        # Convert the metrics into a Python namedtuple and return it
         block = BlockDescriptor_Float64()
         metrics.getBlockOfRows(0, 1, readOnly, block)
-        self._multiclass_metrics = block.getArray().flatten()
+        x = block.getArray().flatten()
+        self._metrics = MultiClassMetrics(*x)
+        metrics.releaseBlockOfRows(block)
 
 
-    

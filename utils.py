@@ -1,15 +1,15 @@
 from daal.data_management import HomogenNumericTable, BlockDescriptor_Float64, readOnly
 
-def getArrayFromNT(table, num_rows=0):
+def getArrayFromNT(table, nrows=0):
     bd = BlockDescriptor_Float64()
-    if num_rows == 0:
-        num_rows = table.getNumberOfRows()
-    table.getBlockOfRows(0, num_rows, readOnly, bd)
+    if nrows == 0:
+        nrows = table.getNumberOfRows()
+    table.getBlockOfRows(0, nrows, readOnly, bd)
     npa = bd.getArray()
     table.releaseBlockOfRows(bd)
     return npa
 
-def printNT(table, num_printed_rows = 0, message=''):
-    npa = getArrayFromNT(table, num_printed_rows)
+def printNT(table, nrows = 0, message=''):
+    npa = getArrayFromNT(table, nrows)
     print(message, '\n', npa)
 
