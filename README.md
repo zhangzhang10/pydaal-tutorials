@@ -31,6 +31,7 @@ More detailed instructions can be found from [this online article](https://softw
 * [Linear regression](./LR_example.ipynb)
 * [SVM and multi-class classifier](./SVM_example.ipynb)
 * [Online Ridge regression](./Regression_online_example.ipynb)
+* [Online Multinomial Naive Bayes](./NaiveBayes_online_example.ipynb)
 
 Data files used in the tutorials are in the `./mldata` folder. These data files
 are downloaded from the [UCI Machine Learning Repository](https://archive.ics.uci.edu/ml/datasets).
