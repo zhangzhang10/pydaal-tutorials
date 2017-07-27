@@ -1,11 +1,12 @@
+import numpy as np
 from daal.data_management import HomogenNumericTable, BlockDescriptor_Float64, readOnly
 
 def getArrayFromNT(table, nrows=0):
-    bd = BlockDescriptor_Float64()
+    bd = BlockDescriptor()
     if nrows == 0:
         nrows = table.getNumberOfRows()
     table.getBlockOfRows(0, nrows, readOnly, bd)
-    npa = bd.getArray()
+    npa = np.copy(bd.getArray())
     table.releaseBlockOfRows(bd)
     return npa
 
