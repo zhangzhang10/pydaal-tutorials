@@ -41,6 +41,7 @@ More details on all these stages are available in [Volume 3](./1-gentle-introduc
 ### Currently, helper function classes are provided for
 1. [Linear Regression](./2-helper-function-classes/LinearRegression)
 2. [SVM - Binary and Multi-Class classifier](./2-helper-function-classes/SVM)
+3. [Kmeans](./2-helper-function-classes/Kmeans)
 
 For practice, usage examples with sample datasets are also provided that utilize these helper function classes.
 
