@@ -39,9 +39,12 @@ Various stages of machine learning model building process are bundled together t
 More details on all these stages are available in [Volume 3](./1-gentle-introductory-series/volume-3-analytics-model-building-deployment.ipynb).
 
 ### Currently, helper function classes are provided for
-1. [Linear Regression](./2-helper-function-classes/LinearRegression)
-2. [SVM - Binary and Multi-Class classifier](./2-helper-function-classes/SVM)
+1. [Linear Regression](./2-pre-built-helper-classes/LinearRegression)
+2. [Ridge Regression](./2-pre-built-helper-classes/RidgeRegression)
+3. [SVM - Binary and Multi-Class classifier](./2-pre-built-helper-classes/SVM)
+4. [Decision Forest(classification and regression)](./2-pre-built-helper-classes/DecisionForest)
 3. [Kmeans](./2-helper-function-classes/Kmeans)
+4. [PCA](./2-pre-built-helper-classes/PCA)
 
 For practice, usage examples with sample datasets are also provided that utilize these helper function classes.
 
