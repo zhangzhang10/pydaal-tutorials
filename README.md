@@ -45,6 +45,9 @@ More details on all these stages are available in [Volume 3](./1-gentle-introduc
 4. [Decision Forest(classification and regression)](./2-pre-built-helper-classes/DecisionForest)
 3. [Kmeans](./2-helper-function-classes/Kmeans)
 4. [PCA](./2-pre-built-helper-classes/PCA)
+2. [SVM - Binary and Multi-Class classifier](./2-pre-built-helper-classes/SVM)
+3. [Kmeans](./2-pre-built-helper-classes/Kmeans)
+
 
 For practice, usage examples with sample datasets are also provided that utilize these helper function classes.
 
